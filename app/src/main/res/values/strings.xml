@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">TripTracker_ESlothower</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="login_button_label">LOG IN</string>
+    <string name="sign_up_text">Sign Up!</string>
+    <string name="name_hint">Name</string>
+    <string name="authentication_error_title">User Authentication Error!</string>
+    <string name="empty_field_signup_error">Be sure you have entered a valid email address, password, and name.</string>
+    <string name="authentication_success_title">User Successfully Authenticated!</string>
+    <string name="necessary_fields">Email and password are required.</string>
+</resources>
