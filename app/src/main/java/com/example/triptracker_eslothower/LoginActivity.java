@@ -1,6 +1,7 @@
 package com.example.triptracker_eslothower;
 import com.backendless.Backendless;
 
+import android.app.ProgressDialog;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -81,10 +82,16 @@ public class LoginActivity extends AppCompatActivity {
                     user.setPassword(password);
                     user.setProperty("name", name);
 
+                    final ProgressDialog pDialog = ProgressDialog.show(LoginActivity.this,
+                            "Please Wait!",
+                            "Creating a new account...",
+                            true);
+
                     Backendless.UserService.register(user,
                             new AsyncCallback<BackendlessUser>() {
                                 @Override
                                 public void handleResponse( BackendlessUser backendlessUser ) {
+                                    pDialog.dismiss();
                                     Log.i(TAG, "Registration successful for " + backendlessUser.getEmail());
                                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                                     builder.setMessage("Registration successful for " + backendlessUser.getEmail());
@@ -95,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                                 @Override
                                 public void handleFault( BackendlessFault fault ) {
+                                    pDialog.dismiss();
                                     Log.i(TAG, "Registration failed: " + fault.getMessage());
 
 
@@ -132,15 +140,22 @@ public class LoginActivity extends AppCompatActivity {
                     user.setPassword(password);
                     user.setProperty("name", name);
 
+                    final ProgressDialog pDialog = ProgressDialog.show(LoginActivity.this,
+                            "Please Wait!",
+                            "Creating a new account...",
+                            true);
+
                     Backendless.UserService.login(userEmail, password,
                             new AsyncCallback<BackendlessUser>() {
                                 @Override
                                 public void handleResponse( BackendlessUser backendlessUser ) {
+                                    pDialog.dismiss();
                                     Log.i(TAG, "Login successful for " + backendlessUser.getEmail());
 
                                 }
                                 @Override
                                 public void handleFault( BackendlessFault fault ) {
+                                    pDialog.dismiss();
                                     Log.i(TAG, "Login failed: " + fault.getMessage());
                                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                                     builder.setMessage(fault.getMessage() + "\nAlso, please enter your email and password");
