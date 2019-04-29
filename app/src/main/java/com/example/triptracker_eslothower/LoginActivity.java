@@ -2,6 +2,7 @@ package com.example.triptracker_eslothower;
 import com.backendless.Backendless;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -91,7 +92,6 @@ public class LoginActivity extends AppCompatActivity {
                             new AsyncCallback<BackendlessUser>() {
                                 @Override
                                 public void handleResponse( BackendlessUser backendlessUser ) {
-                                    pDialog.dismiss();
                                     Log.i(TAG, "Registration successful for " + backendlessUser.getEmail());
                                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                                     builder.setMessage("Registration successful for " + backendlessUser.getEmail());
@@ -99,10 +99,11 @@ public class LoginActivity extends AppCompatActivity {
                                     builder.setPositiveButton(android.R.string.ok, null);
                                     AlertDialog dialog = builder.create();
                                     dialog.show();
+                                    Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
+                                    startActivity(intent);
                                 }
                                 @Override
                                 public void handleFault( BackendlessFault fault ) {
-                                    pDialog.dismiss();
                                     Log.i(TAG, "Registration failed: " + fault.getMessage());
 
 
@@ -149,13 +150,13 @@ public class LoginActivity extends AppCompatActivity {
                             new AsyncCallback<BackendlessUser>() {
                                 @Override
                                 public void handleResponse( BackendlessUser backendlessUser ) {
-                                    pDialog.dismiss();
                                     Log.i(TAG, "Login successful for " + backendlessUser.getEmail());
+                                    Intent intent = new Intent(LoginActivity.this, TripListActivity.class);
+                                    startActivity(intent);
 
                                 }
                                 @Override
                                 public void handleFault( BackendlessFault fault ) {
-                                    pDialog.dismiss();
                                     Log.i(TAG, "Login failed: " + fault.getMessage());
                                     AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                                     builder.setMessage(fault.getMessage() + "\nAlso, please enter your email and password");
