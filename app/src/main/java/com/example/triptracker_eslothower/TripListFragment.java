@@ -18,10 +18,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.backendless.Backendless;
+import com.backendless.BackendlessUser;
 import com.backendless.async.callback.AsyncCallback;
+import com.backendless.async.callback.BackendlessCallback;
 import com.backendless.exceptions.BackendlessFault;
+import com.backendless.persistence.BackendlessDataQuery;
+import com.backendless.persistence.DataQueryBuilder;
+import com.backendless.persistence.QueryOptions;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Created by klaidley on 4/13/2015.
@@ -179,9 +187,18 @@ public class TripListFragment extends ListFragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-			// todo: Activity 3.1.4
-            return null;
-		
+
+
+           convertView = getActivity().getLayoutInflater().inflate(R.layout.fragment_trip_list_item, null);
+           Trip trip = getItem(position);
+
+           TextView tripName = (TextView)convertView.findViewById(R.id.trip_list_item_textName);
+           TextView tripStartDate = (TextView)convertView.findViewById(R.id.trip_list_item_textStartDate);
+           tripName.setText(trip.getName());
+           tripStartDate.setText(DateFormat.format("MM-dd-yyyy", trip.getStartDate()));
+           return convertView;
+
+
         }
     }
 
@@ -195,8 +212,43 @@ public class TripListFragment extends ListFragment {
 
 		// todo: Activity 3.1.4
 
+        BackendlessUser user = Backendless.UserService.CurrentUser();
+
+        DataQueryBuilder dataQueryBuilder = DataQueryBuilder.create();
+        if (mPublicView){
+            dataQueryBuilder.setWhereClause("shared = true");
+        }
+        else {
+            dataQueryBuilder.setWhereClause("ownerId='" + user.getObjectId() + "'");
+        }
+        QueryOptions qo = new QueryOptions();
+        qo.addSortByOption("startDate");
+        //dataQueryBuilder.setQueryOptions(qo);
+
+        Backendless.Persistence.of(Trip.class).find(dataQueryBuilder, new BackendlessCallback<List<Trip>>() {
+            @Override
+            public void handleResponse(List<Trip> response) {
+                Log.d(TAG, response.get(0).toString());
+                mTrips.clear();
+                for (Trip trip : response){
+                    mTrips.add(trip);
+                }
+                ArrayListSorter.insertionSort(mTrips);
+                ((TripAdapter)getListAdapter()).notifyDataSetChanged();
+            }
+
+            @Override
+            public void handleFault(BackendlessFault fault) {
+                Log.e(TAG, fault.toString());
+            }
+        });
+
     }
 
-
+    @Override
+    public void onResume() {
+        refreshTripList();
+        super.onResume();
+    }
 
 }

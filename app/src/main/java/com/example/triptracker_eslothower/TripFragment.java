@@ -184,6 +184,12 @@ public class TripFragment extends Fragment {
                     //save the data to Backendless
 					
 					// todo: Activity 3.1.3
+                    // DONE TO DO
+
+
+                    updateTrip(item);
+
+
                 }
 				return true;
             case R.id.action_delete:
@@ -291,6 +297,40 @@ public class TripFragment extends Fragment {
 
             //  save the trip in backendless
             //  todo: Activity 3.1.3
+            // DONE TO DO
+
+
+            mTrip.setName(name);
+            mTrip.setDescription(desc);
+            mTrip.setStartDate(sDate);
+            mTrip.setEndDate(eDate);
+            mTrip.setShared(shared);
+            mTrip.setObjectId(Backendless.UserService.CurrentUser().getObjectId());
+
+            Thread thread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Backendless.Data.of(Trip.class).save(mTrip);
+
+                }
+            });
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                Log.e(TAG, "Saving trip failed: " + e.getMessage());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage(e.getMessage());
+                builder.setTitle(R.string.trip_error_title);
+                builder.setPositiveButton(android.R.string.ok, null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+
+            Intent intent = getActivity().getIntent();
+            intent.putExtra(Trip.EXTRA_TRIP_PUBLIC_VIEW, mPublicView);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
 
         }
     }
@@ -298,5 +338,8 @@ public class TripFragment extends Fragment {
     private void deleteTrip(MenuItem menuItem) {
 		// todo: Activity 3.1.5
     }
+
+
+
 
 }
